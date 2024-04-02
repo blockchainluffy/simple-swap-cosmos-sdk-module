@@ -1,0 +1,47 @@
+syntax = "proto3";
+package cosmos.simpleswap.v1;
+option go_package = "github.com/cosmos/simpleswap";
+
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
+
+// Params defines the parameters of the module.
+message Params {
+  option (amino.name) = "cosmos/simpleswap/Params";
+
+  repeated cosmos.base.v1beta1.Coin whitelistedCoins = 1;// coins that are listed by the module
+  
+  int32 swapFeePercentage = 2; // fee percentage charged at swap
+
+  int64 decimals = 3; // number of decimals for the stablecoin
+
+  cosmos.base.v1beta1.Coin shareToken = 4; // coin that represents the pool share
+}
+
+message LiquidityProvider {
+  cosmos.base.v1beta1.Coin stableCoin = 1; // coin that the LP is providing
+  cosmos.base.v1beta1.Coin poolShare = 2;            // pool share that the LP is providing
+  int64 accruedFees = 3;                     // amount of fees accrued
+  int64 globallyAccruedFees = 4;             // amount of fees accrued globally
+}
+
+message Pool {
+  int64 totalAccruedFees = 1;
+  int64 totalLiquidity = 2;
+  int64 decimals = 3;
+  cosmos.base.v1beta1.Coin shareToken = 4;
+  int32 swapFeePercentage = 5;
+}
+
+// GenesisState is the state that must be provided at genesis.
+message GenesisState {
+
+  // Pool is the liquidity pool invovlved in our simpleswap module.
+  Pool pool = 1;
+
+  // params defines all the parameters of the module.
+  Params params = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}

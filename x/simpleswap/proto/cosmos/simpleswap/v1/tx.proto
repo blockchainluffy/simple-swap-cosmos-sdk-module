@@ -1,0 +1,103 @@
+syntax = "proto3";
+package cosmos.simpleswap.v1;
+
+option go_package = "github.com/cosmos/simpleswap";
+
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/msg/v1/msg.proto";
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
+import "cosmos/simpleswap/v1/types.proto";
+import "cosmos_proto/cosmos.proto";
+
+// Msg defines the module Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // AddLiquidity adds liquidity to the pool.
+  rpc AddLiquidity(MsgAddLiquidity) returns (MsgAddLiquidityResponse);
+
+  // SwapLiquidity swaps tokens in the pool.
+  rpc SwapLiquidity(MsgSwapLiquidity) returns (MsgSwapLiquidityResponse);
+
+  // RemoveLiquidity removes liquidity from the pool.
+  rpc RemoveLiquidity(MsgRemoveLiquidity) returns (MsgRemoveLiquidityResponse);
+
+  // UpdateParams updates the module parameters.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+}
+
+// MsgAddLiquidity is the Msg/AddLiquidity request type.
+message MsgAddLiquidity {
+  option (cosmos.msg.v1.signer) = "liquidityProvider";
+  option (amino.name) = "cosmos/simpleswap/MsgAddLiquidity";
+
+  // liquidityProvider is the address that adds liquidity to the pool.  
+  string liquidityProvider = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // token is the token to add to the pool.
+  cosmos.base.v1beta1.Coin token = 2  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message MsgAddLiquidityResponse {
+
+  int32 statusCode = 1;
+}
+
+// MsgSwapLiquidity is the Msg/SwapLiquidity request type.
+message MsgSwapLiquidity {
+  option (cosmos.msg.v1.signer) = "trader";
+  option (amino.name) = "cosmos/simpleswap/MsgSwapLiquidity";
+
+  // sender is the address that swaps tokens in the pool.
+  string trader = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // input is the input token to swap.
+  // i.e. the coins proided by the user to the Pool.
+  cosmos.base.v1beta1.Coin input = 2  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+
+  // output is the output token to receive.
+  // i.e. the coins received by the user from the Pool.
+  cosmos.base.v1beta1.Coin output = 3  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message MsgSwapLiquidityResponse {
+
+  int32 statusCode = 1;
+}
+
+// MsgRemoveLiquidity is the RemoveLiquidity request type.
+message MsgRemoveLiquidity {
+  option (cosmos.msg.v1.signer) = "liquidityProvider";
+  option (amino.name) = "cosmos/simpleswap/MsgRemoveLiquidity";
+
+  // liquidityProvider is the address that removes liquidity from the pool.
+  string liquidityProvider = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // token is the token to remove from the pool.
+  cosmos.base.v1beta1.Coin token = 2  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message MsgRemoveLiquidityResponse {
+
+  int32 statusCode = 1;
+}
+
+// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "cosmos/simpleswap/MsgUpdateParams";
+
+  // authority is the address that controls the module
+  // NOTE: Defaults to the governance module unless overwritten.
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // params defines the module parameters to update.
+  // NOTE: All parameters must be supplied.
+  Params params = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
+message MsgUpdateParamsResponse {}

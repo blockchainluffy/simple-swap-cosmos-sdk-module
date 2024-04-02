@@ -1,0 +1,89 @@
+syntax = "proto3";
+package cosmos.simpleswap.v1;
+
+option go_package = "github.com/cosmos/simpleswap";
+
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos/simpleswap/v1/types.proto";
+import "google/api/annotations.proto";
+import "cosmos/query/v1/query.proto";
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+// Msg defines the module Msg service.
+service Query {
+  // Params returns the module parameters.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/cosmos/simpleswap/v1/params";
+  }
+
+  // GetPool returns the pool information.
+  rpc Pool(QueryPoolRequest) returns (QueryPoolResponse) {
+    option (google.api.http).get = "/cosmos/simpleswap/v1/pool";
+  }
+
+  // GetLiquidityProvider returns the liquidity provider information.
+  rpc LiquidityProvider(QueryLiquidityProviderRequest) returns (QueryLiquidityProviderResponse) {
+    option (google.api.http).get = "/cosmos/simpleswap/v1/liquidity_provider/{lp_address}";
+  }
+
+  // GetCoinReserve returns the coin reserve information for a given coin denom.
+  rpc CoinReserve(QueryCoinReserveRequest) returns (QueryCoinReserveResponse) {
+    option (google.api.http).get = "/cosmos/simpleswap/v1/coin_reserve/{coin_denom}";
+  }
+
+  // GetCoinReserves returns the coin reserves information for all coin denoms.
+  rpc CoinReserves(QueryCoinReservesRequest) returns (QueryCoinReservesResponse) {
+    option (google.api.http).get = "/cosmos/simpleswap/v1/coin_reserves";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params defines the parameters of the module.
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// QueryPoolRequest is the request type for the Query/Pool RPC method.
+message QueryPoolRequest {} 
+
+message QueryPoolResponse {
+  // pool defines the pool information.
+  Pool pool = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// QueryLiquidityProviderRequest is the request type for the Query/LiquidityProvider RPC method.
+message QueryLiquidityProviderRequest {
+  // lp_address defines the address of the liquidity provider.
+  string lp_address = 1;
+}
+
+// QueryLiquidityProviderResponse is the response type for the Query/LiquidityProvider RPC method.
+message QueryLiquidityProviderResponse {
+  // liquidity_provider defines the liquidity provider information.
+  LiquidityProvider liquidity_provider = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryCoinReserveRequest {
+  string coin_denom = 1;
+}
+
+message QueryCoinReserveResponse {
+  cosmos.base.v1beta1.Coin coin_reserve = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryCoinReservesRequest {}
+
+message QueryCoinReservesResponse {
+  repeated cosmos.base.v1beta1.Coin coin_reserves = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
