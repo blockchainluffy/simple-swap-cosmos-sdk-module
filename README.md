@@ -28,7 +28,7 @@ To install and run Mini with the MiniSwap module, follow these steps:
 4. Add the path to the `minid` binary to your system's `$PATH` environment variable. This allows you to run the `minid` command from any directory.
 Add the below command at the end of your .bashrc or .zshrc file.
  ```bash
- export PATH=$PATH:/Users/amandeepsingh/go/bin
+ export PATH=$PATH:/Users/punit-j/go/bin
 ```
 > P.S. Run the command `which minid`, in a new terminal to verify that `minid` is now correctly in you path.
 5. Run the following command to install all the dependencies, intialize your genesis and start the chain:
